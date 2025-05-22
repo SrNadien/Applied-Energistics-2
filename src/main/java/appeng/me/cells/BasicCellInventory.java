@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
 import appeng.api.config.Actionable;
@@ -272,7 +273,7 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        for (var entry : this.getCellItems().object2LongEntrySet()) {
+        for (var entry : Object2LongMaps.fastIterable(this.getCellItems())) {
             out.add(entry.getKey(), entry.getLongValue());
         }
     }
@@ -381,7 +382,14 @@ public class BasicCellInventory implements StorageCell {
 
         // Run regular insert logic and then apply void upgrade to the returned value.
         long inserted = innerInsert(what, amount, mode);
-        return this.hasVoidUpgrade ? amount : inserted;
+
+        // In the event that a void card is being used on a (full) unformatted cell, ensure it doesn't void any items
+        // that the cell isn't even storing and cannot store to begin with
+        if (!isPreformatted() && hasVoidUpgrade && !canHoldNewItem()) {
+            return getCellItems().containsKey(what) ? amount : inserted;
+        }
+
+        return hasVoidUpgrade ? amount : inserted;
     }
 
     // Inner insert for items that pass the filter.

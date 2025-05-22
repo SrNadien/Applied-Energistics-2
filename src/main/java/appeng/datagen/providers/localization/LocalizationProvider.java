@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.PowerUnits;
-import appeng.client.guidebook.GuidebookText;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
@@ -56,7 +55,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         addEnum(PlayerMessages.class);
         addEnum(InGameTooltip.class);
         addEnum(ItemModText.class);
-        addEnum(GuidebookText.class);
         // Can't implement LocalizationEnum since it's not in the API, but PowerUnits is
         for (var powerUnit : PowerUnits.values()) {
             add(powerUnit.unlocalizedName, powerUnit.symbolName);
@@ -107,6 +105,7 @@ public class LocalizationProvider implements IAE2DataProvider {
 
     private void generateLocalizations() {
         add("ae2.permission_denied", "You lack permission to access this.");
+        add("dimension.ae2.spatial_storage", "Spatial Storage");
         add("biome.ae2.spatial_storage", "Spatial Storage");
         add("commands.ae2.ChunkLoggerOff", "Chunk Logging is now off");
         add("commands.ae2.ChunkLoggerOn", "Chunk Logging is now on");
